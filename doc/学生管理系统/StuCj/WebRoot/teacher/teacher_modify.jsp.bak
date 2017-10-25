@@ -1,0 +1,111 @@
+<%@ page contentType="text/html;charset=GBK" %>
+<%@ page session="true" %>
+<%@ page import="xscj.op.*" %>
+<jsp:useBean id="teacher" scope="page" class="xscj.run.op_teacher" />
+<%
+	String mesg = "";
+	String submit = request.getParameter("Submit");
+	int Id =0;
+	if (submit!=null && !submit.equals("")){		
+		if(teacher.getRequest(request)){
+			if(teacher.update()){
+				mesg = "教师信息修改成功!";
+			} else {
+				mesg = "数据库操作失败!";
+			}
+		}else {
+			mesg = "对不起，你提交的参数有错误!";
+		}
+	}
+	if (request.getParameter("id")==null || request.getParameter("id").equals("")) {
+		mesg = "你要修改的数据参数错误!";
+	} else {
+		try {
+			Id = Integer.parseInt(request.getParameter("id"));
+			if (!teacher.getOneteacher(Id)){
+				mesg = "你要修改的数据不存在!";
+			}
+		} catch (Exception e){
+			mesg = "你要修改的数据参数错误!";
+		}
+	}
+%>
+<script language="javascript">
+  function checkform() {
+	if (document.form1.id.value=="") {
+		alert("你要修改的数据不存在!");
+		return false;
+	}
+	if (document.form1.xm.value=="") {
+		document.form1.xm.focus();
+		alert("姓名不能为空!");
+		return false;
+	}
+	
+	return true;
+
+  }
+   function winclose() { 
+window.opener.location.reload();//刷新 
+window.close();//关闭 
+} 
+</script>
+<html>
+<head>
+<title>修改教师信息</title>
+<%@include file="../inc/gs.inc"%>
+</head>
+<body bgcolor="#DEF3CE" text="#000000" >
+<center>
+<table width="100%" border="0" cellspacing="1" cellpadding="1">
+<form name="form1" method="post" action="teacher_modify.jsp">
+<tr>
+<td width="100%" align=center style="border-left:none; border-right:none; border-top:none ; border-bottom:2 solid green">
+<font size=2 color=green><b>编辑教师信息</b>&nbsp;&nbsp;<%=mesg%>&nbsp;&nbsp;<a href="javascript:window.close()"><font size=2>关闭窗口</font></a></font></td>
+</tr>
+<% if(mesg.equals("")){teacher bk = (teacher) teacher.getteacherlist().elementAt(0);%>
+<tr>
+<td width="100%" style="border-left:none; border-right:none; border-top:none ; border-bottom:1 solid white">
+<font size=2 color=green>编&nbsp;&nbsp;&nbsp; 号:<input type="text" name="jsh" size=15 value=<%=bk.getjsh()%>></font></td>
+</tr>
+<tr>
+<td width="100%" style="border-left:none; border-right:none; border-top:none ; border-bottom:1 solid white">
+<font size=2 color=green>姓&nbsp;&nbsp;&nbsp; 名:<input type="text" name="xm" size=15 value=<%=bk.getxm()%>></font></td>
+</tr>
+<tr>
+<td width="100%" style="border-left:none; border-right:none; border-top:none ; border-bottom:1 solid white">
+<font size=2 color=green>性&nbsp;&nbsp;&nbsp; 别:
+<input type="radio" value="1" name="xb" <%if(bk.getxb().trim().equals("1")){%>checked<%}%>>男
+<input type="radio" value="2" name="xb" <%if(bk.getxb().trim().equals("2")){%>checked<%}%>>女
+</font>
+</td>
+</tr>
+<tr>
+<td width="100%" style="border-left:none; border-right:none; border-top:none ; border-bottom:1 solid white">
+<font size=2 color=green>职&nbsp;&nbsp;&nbsp; 称:
+<input type="radio" value="教授" <%if(bk.getzc().trim().equals("教授")){%>checked<%}%> name="zc">教授
+<input type="radio" value="副教授" <%if(bk.getzc().trim().equals("副教授")){ %>checked<%}%> name="zc">副教授
+<input type="radio" value="讲师" <%if(bk.getzc().trim().equals("讲师")){ %>checked<%}%> name="zc">讲师
+<input type="radio" value="助教" <%if(bk.getzc().trim().equals("助教")){ %>checked<%}%> name="zc">助教
+<input type="radio" value="教师" <%if(bk.getzc().trim().equals("教师")){ %>checked<%}%> name="zc">教师</font></td>
+</tr>
+<tr>
+<td width="100%" style="border-left:none; border-right:none; border-top:none ; border-bottom:1 solid white">
+<font size=2 color=green>住&nbsp;&nbsp;&nbsp; 址:<input type="text" name="zz" size=40 value=<%=bk.getzz()%>></font></td>
+</tr>
+<tr>
+<td width="100%" style="border-left:none; border-right:none; border-top:none ; border-bottom:2 solid green">
+<font size=2 color=green>联系方式:<input type="text" name="lxfs" size=40 value=<%=bk.getlxfs()%>></font></td>
+</tr>
+<tr>
+<td width="100%">
+<p align="center"><input type="hidden" name="id" value="<%= Id %>">
+<input type="submit" name="Submit" value="提交" onclick="return(checkform());">
+&nbsp;&nbsp;<input type="reset" name="reset" value="重置"></td>
+</tr>
+<% } %>
+</form>
+</table>
+</center>
+</body>
+</html>
